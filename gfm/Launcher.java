@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 public class Launcher {
    private static final String digits = "0123456789";
 
+   private boolean isInited = false;
    private String myAvailableVersionURL = null;
    private String myCurrentVersionURL = null;
    private String myCurrentVersion = null;
@@ -36,6 +37,7 @@ public class Launcher {
       InputStream in = null;
       BufferedReader reader = null;
       InputStreamReader inputReader = null;
+      isInited = true;
 
       try {
          in = getClass().getResourceAsStream(versioningFile);
@@ -78,6 +80,10 @@ public class Launcher {
    }
 
    public boolean isLatestVersion() {
+      if ( !isInited ) {
+         return true;
+      }
+
       // get arrays of decimal places for versions
       if ( myLatestVersion == null || myCurrentVersion == null ) {
          return true;
@@ -154,6 +160,10 @@ public class Launcher {
    }
 
    public int getUpgradeSize() {
+      if ( !isInited ) {
+         return -1;
+      }
+
       if ( myUpgradeSize == -1 ) {
          try {
             getLatestVersion();
@@ -169,6 +179,10 @@ public class Launcher {
    }
 
    public String getLatestVersion() throws UnknownHostException {
+      if ( !isInited ) {
+         return "";
+      }
+
       if ( myAvailableVersionURL == null ) {
          throw new NullPointerException("URL to get next version number from is null.");
       }
@@ -205,6 +219,10 @@ public class Launcher {
    }
 
    public String getCurrentVersion() {
+      if ( !isInited ) {
+         return "";
+      }
+
       if ( myCurrentVersion != null ) {
          return myCurrentVersion;
       } else {
@@ -240,6 +258,10 @@ public class Launcher {
    }
 
    public boolean downloadLatestVersion() {
+      if ( !isInited ) {
+         return true;
+      }
+
       // set variables for creating file name
       String fileName = "Quiztter" + ("" + myLatestVersion).replace(".", "_") + ".jar";
       File file = new File(fileName);
@@ -298,5 +320,11 @@ public class Launcher {
       return true;
    }
 
-   public String getDownloadURL() { return myDownloadURL; }
+   public String getDownloadURL() {
+      if ( !isInited ) {
+         return "";
+      }
+
+      return myDownloadURL;
+   }
 }
