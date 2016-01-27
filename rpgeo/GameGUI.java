@@ -12,11 +12,13 @@ import gfm.Macro;
 
 public class GameGUI implements Macro {
    private Game myGame;
-   private GUIBox myChatBox;
+   private Player myPlayer;
+   private ChatBox myChatBox;
    private GUIBox myHubBox;
 
-   public GameGUI(Game game) {
+   public GameGUI(Game game, Player player) {
       myGame = game;
+      myPlayer = player;
       init();
    }
 
@@ -26,7 +28,7 @@ public class GameGUI implements Macro {
       Rectangle chatBounds = new Rectangle();
       chatBounds.setLocation(4,  4);
       chatBounds.setSize(myGame.getWidth() / 6, myGame.getHeight() * 4 / 5);
-      myChatBox = new GUIBox(chatBounds, color);
+      myChatBox = new ChatBox(chatBounds, color, myPlayer);
 
       Rectangle hubBounds = new Rectangle();
       hubBounds.setLocation(4, 8 + myGame.getHeight() * 4 / 5);
@@ -48,20 +50,17 @@ public class GameGUI implements Macro {
 
    @Override
    public void keyPressed(KeyEvent event) {
-      // TODO Auto-generated method stub
-
+      myChatBox.keyPressed(event);
    }
 
    @Override
    public void keyReleased(KeyEvent event) {
-      // TODO Auto-generated method stub
-
+      myChatBox.keyReleased(event);
    }
 
    @Override
    public void keyTyped(KeyEvent event) {
-      // TODO Auto-generated method stub
-
+      myChatBox.keyTyped(event);
    }
 
    @Override
@@ -84,15 +83,12 @@ public class GameGUI implements Macro {
 
    @Override
    public void mouseExited(MouseEvent event) {
-      myChatBox.mouseExited(event);
-      myHubBox.mouseExited(event);
+      myHubBox.deactivate();
    }
 
    @Override
    public void mouseMoved(MouseEvent event) {
-      myChatBox.mouseMoved(event);
-      myHubBox.mouseMoved(event);
-   }
+      myHubBox.setActivated(myHubBox.contains(event));   }
 
    @Override
    public void mousePressed(MouseEvent event) {
