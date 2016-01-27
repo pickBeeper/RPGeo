@@ -34,19 +34,22 @@ public class MouseGoto {
    }
 
    public void mouseClicked(MouseEvent event) {
-      activate();
-      myPos.setX(event.getX());
-      myPos.setY(event.getY());
-      myAnimation.reset();
-      myAnimation.setPos(myPos.copy());
+      if ( myBounds.contains(event.getPoint()) ) {
+         activate();
+         myPos.setX(event.getX());
+         myPos.setY(event.getY());
+         myAnimation.reset();
+         myAnimation.setPos(myPos.copy());
+      }
    }
 
    public void mouseDragged(MouseEvent event) {
-      activate();
-      myPos.setX(event.getX());
-      myPos.setY(event.getY());
-      myAnimation.setPos(myPos.copy());
-
+      if ( myBounds.contains(event.getPoint()) ) {
+         activate();
+         myPos.setX(event.getX());
+         myPos.setY(event.getY());
+         myAnimation.setPos(myPos.copy());
+      }
    }
 
    public void activate() { myIsActivated = true; }
@@ -58,7 +61,7 @@ class MouseGotoAnimation {
    private int myFrame;
    private Vec2 myPos;
    private Vec2[] myPoints;
- 
+
    public MouseGotoAnimation(Color color) {
       myColor = color;
       myFrame = 0;
@@ -69,28 +72,25 @@ class MouseGotoAnimation {
       pen.setColor(myColor);
 
       rotateAndScale();
-      int[] xCoords = new int[]
-            { (int) myPoints[0].getX(), (int) myPoints[1].getX(),
-              (int) myPoints[2].getX(), (int) myPoints[3].getX() };
-      int[] yCoords = new int[]
-            { (int) myPoints[0].getY(), (int) myPoints[1].getY(),
-              (int) myPoints[2].getY(), (int) myPoints[3].getY() };
+      int[] xCoords = new int[] {
+            (int) myPoints[0].getX(), (int) myPoints[1].getX(),
+            (int) myPoints[2].getX(), (int) myPoints[3].getX() };
+      int[] yCoords = new int[] {
+            (int) myPoints[0].getY(), (int) myPoints[1].getY(),
+            (int) myPoints[2].getY(), (int) myPoints[3].getY() };
 
       Polygon square = new Polygon(xCoords, yCoords, 4);
       pen.fillPolygon(square);
    }
 
    public void rotateAndScale() {
-      int x = (int) myPos.getX();
-      int y = (int) myPos.getY();
-
-      myPoints = new Vec2[]
-          { new Vec2(-1, -1), new Vec2(1, -1),
-            new Vec2(1, 1),   new Vec2(-1, 1) };
+      myPoints = new Vec2[] {
+            new Vec2(-1, -1), new Vec2(1, -1),
+            new Vec2(1, 1), new Vec2(-1, 1) };
 
       for ( Vec2 point : myPoints ) {
-         point.setMagnitude(5);
-         point.rotateDegrees(7 * myFrame);
+         point.setMagnitude(7);
+         point.rotateDegrees(5 * myFrame);
          point.addVector(myPos);
       }
    }
