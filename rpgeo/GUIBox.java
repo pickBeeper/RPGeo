@@ -16,8 +16,8 @@ class GUIBox {
    private int myMinOpacity;
    private int myCurrentOpacity;
    private int myOpacityDirection;
-   private boolean myIsMouseOver;
-   
+   private boolean myIsActivated;
+
    public GUIBox(Rectangle box, Color color) {
       myBox = box;
       myColor = color;
@@ -25,7 +25,7 @@ class GUIBox {
       myMinOpacity = myMaxOpacity / 6 * 4;
       myCurrentOpacity = myMinOpacity;
       myOpacityDirection = -opacitySpeed;
-      myIsMouseOver = false;
+      myIsActivated = false;
    }
 
    public void draw(Graphics pen) {
@@ -35,32 +35,32 @@ class GUIBox {
    }
 
    public void update() {
-      if ( myOpacityDirection == -opacitySpeed ) { 
+      if ( myOpacityDirection == -opacitySpeed ) {
          if ( myCurrentOpacity > myMinOpacity ) {
             myCurrentOpacity -= opacitySpeed;
-         } else if ( myIsMouseOver ) {
+         } else if ( myIsActivated ) {
             myOpacityDirection = opacitySpeed;
          }
       } else if ( myOpacityDirection == opacitySpeed ) {
          if ( myCurrentOpacity < myMaxOpacity ) {
             myCurrentOpacity += opacitySpeed;
-         } else if ( !myIsMouseOver ) {
+         } else if ( !myIsActivated ) {
             myOpacityDirection = -opacitySpeed;
          }
       }
    }
 
-   public void mouseMoved(MouseEvent event) {
+   public boolean contains(MouseEvent event) {
       if ( myBox.contains(event.getPoint()) ) {
-         myIsMouseOver = true;
-      } else {
-         myIsMouseOver = false;
+         return true;
       }
+      return false;
    }
 
-   public void mouseExited(MouseEvent event) {
-      myIsMouseOver = false;
-   }
+   public void activate() { myIsActivated = true; }
+   public void deactivate() { myIsActivated = false; }
+   public void setActivated(boolean activated) { myIsActivated = activated; }
+   public boolean getIsActivated() { return myIsActivated; }
 
    public Rectangle getBox() { return myBox; }
 }
