@@ -1,6 +1,7 @@
 package rpgeo;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -10,11 +11,13 @@ import gfm.GameComponent;
 public class Place implements GameComponent<DrawUpdatable> {
    private World myWorld;
    private String myName;
+   private Rectangle myBounds;
    private LinkedList<DrawUpdatable> myComponents;
 
    public Place(World world, String name) {
       myWorld = world;
       myName = name;
+      myBounds = myWorld.getBounds();
       myComponents = new LinkedList<DrawUpdatable>();
    }
 
