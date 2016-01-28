@@ -46,7 +46,7 @@ public class Play extends GameState {
       bounds.setSize(getWidth()  - 8, getHeight() * 4 / 5);
 
       myWorld = new World(getGUIManager(), bounds);
-      myWorld.setPlace(new Place(myWorld, 30, 25, "test"));
+      myWorld.setPlace(new TestPlace(myWorld, 30, 25, "test"));
 
       myGameGUI = new GameGUI(this);
    }

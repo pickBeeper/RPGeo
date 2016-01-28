@@ -8,12 +8,29 @@ import java.awt.event.MouseEvent;
 
 import gfm.util.Vec2;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MouseGoto.
+ */
 public class MouseGoto {
+   
+   /** The my bounds. */
    private Rectangle myBounds;
+   
+   /** The my is activated. */
    private boolean myIsActivated;
+   
+   /** The my pos. */
    private Vec2 myPos;
+   
+   /** The my animation. */
    private MouseGotoAnimation myAnimation;
 
+   /**
+    * Instantiates a new mouse goto.
+    *
+    * @param bounds the bounds
+    */
    public MouseGoto(Rectangle bounds) {
       myBounds = bounds;
       myIsActivated = false;
@@ -21,18 +38,31 @@ public class MouseGoto {
       myAnimation = new MouseGotoAnimation(Color.red);
    }
 
+   /**
+    * Draw.
+    *
+    * @param pen the pen
+    */
    public void draw(Graphics pen) {
       if ( myIsActivated ) {
          myAnimation.draw(pen);
       }
    }
 
+   /**
+    * Update.
+    */
    public void update() {
       if ( myIsActivated ) {
          myAnimation.update();
       }
    }
 
+   /**
+    * Mouse clicked.
+    *
+    * @param event the event
+    */
    public void mouseClicked(MouseEvent event) {
       if ( myBounds.contains(event.getPoint()) ) {
          activate();
@@ -43,6 +73,11 @@ public class MouseGoto {
       }
    }
 
+   /**
+    * Mouse dragged.
+    *
+    * @param event the event
+    */
    public void mouseDragged(MouseEvent event) {
       if ( myBounds.contains(event.getPoint()) ) {
          activate();
@@ -52,7 +87,14 @@ public class MouseGoto {
       }
    }
 
+   /**
+    * Activate.
+    */
    public void activate() { myIsActivated = true; }
+   
+   /**
+    * Deactivate.
+    */
    public void deactivate() { myIsActivated = false; }
 }
 

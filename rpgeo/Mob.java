@@ -6,6 +6,8 @@ public abstract class Mob extends GameComponentAdapter {
    private Tile myTile;
    private String myName;
 
+   public abstract void tick();
+
    public Tile getTile() { return myTile; }
    public void setTile(Tile tile) { myTile = tile; }
    public String getName() { return myName; }
