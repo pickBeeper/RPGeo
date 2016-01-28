@@ -13,7 +13,7 @@ public class ChatBox extends GUIBox {
    private String myCurrentMessage;
 
    public ChatBox(Rectangle box, Color color, Player player) {
-      super(box, color, color.getAlpha() / 3, color.getAlpha(), 3);
+      super(box, color, 0, 30, 3);
       myPlayer = player;
       myMessages = new LinkedList<ChatMessage>();
       myCurrentMessage = "";
