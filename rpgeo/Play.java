@@ -8,14 +8,14 @@ import java.awt.event.MouseWheelEvent;
 import gfm.Game;
 import gfm.gamestate.GameState;
 
-public class Test extends GameState {
+public class Play extends GameState {
    private World myWorld;
 
-   public Test(Game game) {
+   public Play(Game game) {
       super(game);
    }
 
-   public Test(Game game, String stateName) {
+   public Play(Game game, String stateName) {
       super(game, stateName);
    }
 
