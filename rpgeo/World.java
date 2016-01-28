@@ -2,6 +2,7 @@ package rpgeo;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -13,24 +14,15 @@ import gfm.gui.GUIManager;
 
 public class World implements GameComponent<Place> {
    private GUIManager myGUIManager;
+   private Rectangle myBounds;
    private Player myPlayer;
    private MouseGoto myMouseGoto;
    private HashMap<String, Place> myPlaces;
    private Place myCurrentPlace;
 
-
-   /*
-    *       myPlayBounds = new Rectangle();
-      // based on numbers in GameGUI
-      myPlayBounds.setLocation(getWidth() / 6 + 8, 4);
-      myPlayBounds.setSize(getWidth() * 5 / 6 - 8, getHeight() * 4 / 5);
-      myMouseGoto = new MouseGoto(myPlayBounds);
-
-    */
-
-
-   public World(GUIManager guiManager) {
+   public World(GUIManager guiManager, Rectangle bounds) {
       myGUIManager = guiManager;
+      myBounds = bounds;
       myPlayer = new Player("", null, 5, Color.red);
       myMouseGoto = new MouseGoto(null);
       myPlaces = new HashMap<String, Place>();
@@ -64,10 +56,12 @@ public class World implements GameComponent<Place> {
 
    @Override
    public void addComponent(Place toAdd) {
+      // error if area name taken
       if ( myPlaces.keySet().contains(toAdd.getName()) ) {
          String message = "Area " + toAdd.getName() + " already exists.";
          throw new IllegalArgumentException(message);
       }
+
       myPlaces.put(toAdd.getName(), toAdd);
    }
 
@@ -81,8 +75,9 @@ public class World implements GameComponent<Place> {
    public MouseGoto getMouseGoto() { return myMouseGoto; }
    @Override
    public Collection<Place> getComponents() { return myPlaces.values(); }
+   public Rectangle getBounds() { return myBounds; }
+   public void setBounds(Rectangle bounds) { myBounds = bounds; }
+   public Place getPlace(String name) { return myPlaces.get(name); }
+   public void setPlace(Place toSet) { myCurrentPlace = toSet; }
 
-   public void setPlace(Place toSet) {
-
-   }
 }
