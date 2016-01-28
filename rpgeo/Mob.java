@@ -1,19 +1,13 @@
 package rpgeo;
 
-import java.awt.Graphics;
+import gfm.GameComponentAdapter;
 
-import gfm.util.ControllableAdapter;
-import gfm.util.Vec2;
-
-public abstract class Mob extends ControllableAdapter {
-   private Vec2 myPos;
+public abstract class Mob extends GameComponentAdapter {
+   private Tile myTile;
    private String myName;
 
-   public abstract void draw(Graphics pen);
-   public abstract void update();
-
+   public Tile getTile() { return myTile; }
+   public void setTile(Tile tile) { myTile = tile; }
    public String getName() { return myName; }
    public void setName(String name) { myName = name; }
-   public Vec2 getPos() { return myPos; }
-   public void setPos(Vec2 pos) { myPos = pos; }
 }
