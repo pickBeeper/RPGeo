@@ -42,10 +42,12 @@ public class Play extends GameState {
    public void init() {
       // bounds to draw world
       Rectangle bounds = new Rectangle();
-      bounds.setLocation(getWidth() / 6 + 8, 4);
-      bounds.setSize(getWidth() * 5 / 6 - 8, getHeight() * 4 / 5);
+      bounds.setLocation(4, 4);
+      bounds.setSize(getWidth()  - 8, getHeight() * 4 / 5);
 
       myWorld = new World(getGUIManager(), bounds);
+      myWorld.setPlace(new Place(myWorld, 30, 25, "test"));
+
       myGameGUI = new GameGUI(this);
    }
 
