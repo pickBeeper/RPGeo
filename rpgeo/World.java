@@ -23,7 +23,7 @@ public class World implements GameComponent<Place> {
    public World(GUIManager guiManager, Rectangle bounds) {
       myGUIManager = guiManager;
       myBounds = bounds;
-      myPlayer = new Player("", null, 5, Color.red);
+      myPlayer = new Player("", null, Color.red);
       myMouseGoto = new MouseGoto(null);
       myPlaces = new HashMap<String, Place>();
    }
@@ -78,6 +78,11 @@ public class World implements GameComponent<Place> {
    public Rectangle getBounds() { return myBounds; }
    public void setBounds(Rectangle bounds) { myBounds = bounds; }
    public Place getPlace(String name) { return myPlaces.get(name); }
-   public void setPlace(Place toSet) { myCurrentPlace = toSet; }
 
+   public void setPlace(Place toSet) {
+      if ( !myPlaces.containsValue(toSet) ) {
+         addComponent(toSet);
+      }
+      myCurrentPlace = toSet;
+   }
 }
