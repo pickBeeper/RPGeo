@@ -1,4 +1,4 @@
-package rpgeo;
+package gfm.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,48 +7,58 @@ import java.awt.event.MouseEvent;
 
 import gfm.util.ColorCross;
 
-class GUIBox {
-   private static int opacitySpeed = 4;
-
+public class GUIBox extends GUIComponentAdapter {
    private Rectangle myBox;
    private Color myColor;
    private int myMaxOpacity;
    private int myMinOpacity;
    private int myCurrentOpacity;
+   private int myOpacitySpeed;
    private int myOpacityDirection;
    private boolean myIsActivated;
 
-   public GUIBox(Rectangle box, Color color) {
+   public GUIBox(Rectangle box, Color color,
+         int minOpacity, int maxOpacity, int opacitySpeed) {
       myBox = box;
       myColor = color;
-      myMaxOpacity = myColor.getAlpha();
-      myMinOpacity = myMaxOpacity / 6 * 4;
+      myMaxOpacity = maxOpacity;
+      myMinOpacity = minOpacity; //  "/ 6 * 4"
       myCurrentOpacity = myMinOpacity;
+      myOpacitySpeed = opacitySpeed;
       myOpacityDirection = -opacitySpeed;
       myIsActivated = false;
    }
 
+   @Override
    public void draw(Graphics pen) {
       Color fill = ColorCross.alpha(myColor, myCurrentOpacity);
       pen.setColor(fill);
       pen.fillRect(myBox.x, myBox.y, myBox.width, myBox.height);
    }
 
+   @Override
    public void update() {
-      if ( myOpacityDirection == -opacitySpeed ) {
+      if ( myOpacityDirection == -myOpacitySpeed ) {
          if ( myCurrentOpacity > myMinOpacity ) {
-            myCurrentOpacity -= opacitySpeed;
+            myCurrentOpacity -= myOpacitySpeed;
          } else if ( myIsActivated ) {
-            myOpacityDirection = opacitySpeed;
+            myOpacityDirection = myOpacitySpeed;
          }
-      } else if ( myOpacityDirection == opacitySpeed ) {
+      } else if ( myOpacityDirection == myOpacitySpeed ) {
          if ( myCurrentOpacity < myMaxOpacity ) {
-            myCurrentOpacity += opacitySpeed;
+            myCurrentOpacity += myOpacitySpeed;
          } else if ( !myIsActivated ) {
-            myOpacityDirection = -opacitySpeed;
+            myOpacityDirection = -myOpacitySpeed;
          }
       }
+
+      if ( myCurrentOpacity > myMaxOpacity ) {
+         myCurrentOpacity = myMaxOpacity;
+      } else if ( myCurrentOpacity < myMinOpacity ) {
+         myCurrentOpacity = myMinOpacity;
+      }
    }
+
 
    public boolean contains(MouseEvent event) {
       if ( myBox.contains(event.getPoint()) ) {
@@ -60,7 +70,7 @@ class GUIBox {
    public void activate() { myIsActivated = true; }
    public void deactivate() { myIsActivated = false; }
    public void setActivated(boolean activated) { myIsActivated = activated; }
-   public boolean getIsActivated() { return myIsActivated; }
+   public boolean isActivated() { return myIsActivated; }
 
    public Rectangle getBox() { return myBox; }
 }
