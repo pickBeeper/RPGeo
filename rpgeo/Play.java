@@ -1,6 +1,7 @@
 package rpgeo;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -10,6 +11,7 @@ import gfm.gamestate.GameState;
 
 public class Play extends GameState {
    private World myWorld;
+   private GameGUI myGameGUI;
 
    public Play(Game game) {
       super(game);
@@ -32,12 +34,19 @@ public class Play extends GameState {
    }
 
    @Override
-   public void initUI() {
+   public void initGUI() {
+      myGameGUI.initGUI();
    }
 
    @Override
    public void init() {
-      myWorld = new World(getGUIManager());
+      // bounds to draw world
+      Rectangle bounds = new Rectangle();
+      bounds.setLocation(getWidth() / 6 + 8, 4);
+      bounds.setSize(getWidth() * 5 / 6 - 8, getHeight() * 4 / 5);
+
+      myWorld = new World(getGUIManager(), bounds);
+      myGameGUI = new GameGUI(this);
    }
 
    @Override
@@ -95,4 +104,5 @@ public class Play extends GameState {
       getGUIManager().mouseWheelMoved(event);
    }
 
+   protected World getWorld() { return myWorld; }
 }
