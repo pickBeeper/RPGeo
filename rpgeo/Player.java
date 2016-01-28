@@ -3,17 +3,13 @@ package rpgeo;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import gfm.util.Vec2;
-
 public class Player extends Mob {
-   private int myRadius;
    private Color myColor;
 
-   public Player(String name, Vec2 pos, int radius, Color color) {
-     setName(name);
-     setPos(pos);
-     myRadius = radius;
-     myColor = color;
+   public Player(String name, Tile tile, Color color) {
+      setName(name);
+      setTile(tile);
+      myColor = color;
    }
 
    public Color getColor() { return myColor; }
@@ -21,15 +17,14 @@ public class Player extends Mob {
 
    @Override
    public void draw(Graphics pen) {
-      pen.setColor(myColor);
-      int x = (int) (getPos().getX() - myRadius);
-      int y = (int) (getPos().getY() - myRadius);
-      pen.fillOval(x, y, 2 * myRadius, 2 * myRadius);
-   }
+      if ( getTile() == null) { return; }
 
-   @Override
-   public void update() {
-      // TODO Auto-generated method stub
-      
+      int x = getTile().getRect().x;
+      int y = getTile().getRect().y;
+      int width = getTile().getRect().width;
+      int height = getTile().getRect().height;
+
+      pen.setColor(myColor);
+      pen.fillRect(x, y, width, height);
    }
 }
