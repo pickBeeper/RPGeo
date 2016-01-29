@@ -3,13 +3,13 @@ package rpgeo;
 import java.awt.Color;
 import java.awt.Graphics;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Player.
  */
 public class Player extends Mob {
 
-   /** The my color. */
+   /* The players color. */
    private Color myColor;
 
    /**
@@ -25,26 +25,12 @@ public class Player extends Mob {
       myColor = color;
    }
 
-   /**
-    * Gets the color.
-    *
-    * @return the color
-    */
-   public Color getColor() { return myColor; }
-
-   /**
-    * Sets the color.
-    *
-    * @param color the new color
-    */
-   public void setColor(Color color) { myColor = color; }
-
    /* (non-Javadoc)
     * @see gfm.GameComponentAdapter#draw(java.awt.Graphics)
     */
    @Override
    public void draw(Graphics pen) {
-      if ( getTile() == null) { return; }
+      if ( getTile() == null ) { return; }
 
       int x = getTile().getRect().x;
       int y = getTile().getRect().y;
@@ -54,4 +40,36 @@ public class Player extends Mob {
       pen.setColor(myColor);
       pen.fillRect(x, y, width, height);
    }
+
+   /* (non-Javadoc)
+    * @see gfm.GameComponentAdapter#update()
+    */
+   @Override
+   public void update() {
+      for ( Tickable toUpdate : getComponents() ) {
+         toUpdate.update();
+      }
+   }
+
+   @Override
+   public void tick() {
+      clearAndDoQueue();
+      for ( Tickable toTick : getComponents() ) {
+         toTick.tick();
+      }
+   }
+
+   /**
+    * Gets players color.
+    *
+    * @return the color
+    */
+   public Color getColor() { return myColor; }
+
+   /**
+    * Sets players color.
+    *
+    * @param color the new color
+    */
+   public void setColor(Color color) { myColor = color; }
 }

@@ -19,13 +19,15 @@ public class World implements GameComponent<Place> {
    private MouseGoto myMouseGoto;
    private HashMap<String, Place> myPlaces;
    private Place myCurrentPlace;
+   private int myTime;
 
    public World(GUIManager guiManager, Rectangle bounds) {
       myGUIManager = guiManager;
       myBounds = bounds;
       myPlayer = new Player("", null, Color.red);
-      myMouseGoto = new MouseGoto(null);
+      myMouseGoto = new MouseGoto(myBounds, myPlayer);
       myPlaces = new HashMap<String, Place>();
+      myTime = 0;
    }
 
    @Override
@@ -33,20 +35,33 @@ public class World implements GameComponent<Place> {
       if ( myCurrentPlace != null ) {
          myCurrentPlace.draw(pen);
       }
+
+      myMouseGoto.draw(pen);
    }
    @Override
    public void update() {
       if ( myCurrentPlace != null ) {
          myCurrentPlace.update();
+         if ( myTime % 5 == 0 ) {
+            myCurrentPlace.tick();
+         }
       }
+
+      myMouseGoto.update();
+
+      myTime++;
    }
 
    public void keyPressed(KeyEvent event) {}
    public void keyReleased(KeyEvent event) {}
    public void keyTyped(KeyEvent event) {}
 
-   public void mouseClicked(MouseEvent event) {}
-   public void mouseDragged(MouseEvent event) {}
+   public void mouseClicked(MouseEvent event) {
+      myMouseGoto.mouseClicked(event);
+   }
+   public void mouseDragged(MouseEvent event) {
+      myMouseGoto.mouseDragged(event);
+   }
    public void mouseEntered(MouseEvent event) {}
    public void mouseExited(MouseEvent event) {}
    public void mouseMoved(MouseEvent event) {}
@@ -58,8 +73,8 @@ public class World implements GameComponent<Place> {
    public void addComponent(Place toAdd) {
       // error if area name taken
       if ( myPlaces.keySet().contains(toAdd.getName()) ) {
-         String message = "Area " + toAdd.getName() + " already exists.";
-         throw new IllegalArgumentException(message);
+         String mssg = "Area " + toAdd.getName() + " already exists.";
+         throw new IllegalArgumentException(mssg);
       }
 
       myPlaces.put(toAdd.getName(), toAdd);
@@ -84,5 +99,6 @@ public class World implements GameComponent<Place> {
          addComponent(toSet);
       }
       myCurrentPlace = toSet;
+      myMouseGoto.setPlace(myCurrentPlace);
    }
 }

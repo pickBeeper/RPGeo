@@ -5,16 +5,13 @@ import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import gfm.DrawUpdatable;
-import gfm.GameComponent;
-
-public class Place implements GameComponent<DrawUpdatable> {
+public class Place extends BasicTickable {
    private World myWorld;
    private int myWidth;
    private int myHeight;
    private String myName;
    private Rectangle myBounds;
-   private LinkedList<DrawUpdatable> myComponents;
+   private LinkedList<Tickable> myComponents;
    private Grid myGrid;
 
    public Place(World world, int width, int height, String name) {
@@ -23,38 +20,44 @@ public class Place implements GameComponent<DrawUpdatable> {
       myHeight = height;
       myName = name;
       myBounds = myWorld.getBounds();
-      myComponents = new LinkedList<DrawUpdatable>();
+      myComponents = new LinkedList<Tickable>();
       myGrid = new Grid(myBounds, myWidth, myHeight);
+      myComponents.add(myGrid);
    }
 
    @Override
    public void draw(Graphics pen) {
-      myGrid.draw(pen);
-
-      for ( DrawUpdatable toDraw : myComponents ) {
+      for ( Tickable toDraw : myComponents ) {
          toDraw.draw(pen);
       }
    }
 
    @Override
    public void update() {
-      for ( DrawUpdatable toUpdate : myComponents ) {
+      for ( Tickable toUpdate : myComponents ) {
          toUpdate.update();
       }
    }
 
    @Override
-   public void addComponent(DrawUpdatable toAdd) {
+   public void tick() {
+      for ( Tickable toTick : myComponents ) {
+         toTick.tick();
+      }
+   }
+
+   @Override
+   public void addComponent(Tickable toAdd) {
       myComponents.add(toAdd);
    }
 
    @Override
-   public void removeComponent(DrawUpdatable toRemove) {
+   public void removeComponent(Tickable toRemove) {
       myComponents.remove(toRemove);
    }
 
    @Override
-   public Collection<DrawUpdatable> getComponents() {
+   public Collection<Tickable> getComponents() {
       return myComponents;
    }
 

@@ -3,10 +3,12 @@ package rpgeo;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import gfm.util.ColorCross;
 
-public class Grid {
+public class Grid extends BasicTickable {
    public enum DIR {
       LEFT, RIGHT, UP, DOWN, UPLEFT,
       UPRIGHT, DOWNLEFT, DOWNRIGHT
@@ -15,13 +17,15 @@ public class Grid {
    private Rectangle myBounds;
    private int myColumns;
    private int myRows;
-   public Tile[][] myTiles;
+   private Tile[][] myTiles;
+   private LinkedList<Tickable> myComponents;
 
    public Grid(Rectangle bounds, int cols, int rows) {
       myBounds = bounds;
       myColumns = cols;
       myRows = rows;
       setUpGrid();
+      myComponents = new LinkedList<Tickable>();
    }
 
    public void setUpGrid() {
@@ -29,10 +33,6 @@ public class Grid {
       int yOff = myBounds.y;
       int allWidth = myBounds.width;
       int allHeight = myBounds.height;
-
-      // int width = allWidth / myColumns;
-      // int height = allHeight / myRows;
-      // int
 
       myTiles = new Tile[ myRows ] [ myColumns ];
       for ( int r = 0; r < myRows; r++ ) {
@@ -47,11 +47,21 @@ public class Grid {
 
             Rectangle bounds = new Rectangle(x, y, width, height);
             Color color = ColorCross.randColor();
-            myTiles[ r ][ c ] = new Tile(this, bounds, color);
+            myTiles[ r ][ c ] = new Tile(this, bounds, r, c, color);
          }
       }
    }
 
+   @Override
+   public void tick() {
+      for ( int r = 0; r < myRows; r++ ) {
+         for ( int c = 0; c < myColumns; c++ ) {
+            myTiles[ r ][ c ].tick();
+         }
+      }
+   }
+
+   @Override
    public void draw(Graphics pen) {
       for ( int r = 0; r < myRows; r++ ) {
          for ( int c = 0; c < myColumns; c++ ) {
@@ -60,6 +70,7 @@ public class Grid {
       }
    }
 
+   @Override
    public void update() {
       for ( int r = 0; r < myRows; r++ ) {
          for ( int c = 0; c < myColumns; c++ ) {
@@ -68,5 +79,27 @@ public class Grid {
       }
    }
 
+   public boolean inBounds(int row, int col) {
+      if ( col >= myTiles[0].length || col < 0 ) {
+         return false;
+      } else if ( row >= myTiles.length || row < 0 ) {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   public void addComponent(Tickable toAdd) {
+      myComponents.add(toAdd);
+   }
+   @Override
+   public void removeComponent(Tickable toRemove) {
+      myComponents.remove(toRemove);
+
+   }
+
+   public Tile[][] getTiles() { return myTiles; }
    public Tile getTile(int row, int col) { return myTiles[ row ][ col ]; }
+   @Override
+   public Collection<Tickable> getComponents() { return myComponents; }
 }

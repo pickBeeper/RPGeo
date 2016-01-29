@@ -7,19 +7,22 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import gfm.DrawUpdatable;
-import gfm.GameComponent;
 
-public class Tile implements GameComponent<DrawUpdatable> {
+public class Tile extends BasicTickable {
    private Grid myGrid;
    private Rectangle myRect;
+   private int myRow;
+   private int myCol;
    private Color myBackground;
-   private LinkedList<DrawUpdatable> myChildren;
+   private LinkedList<Tickable> myChildren;
 
-   public Tile(Grid grid, Rectangle rect, Color background) {
+   public Tile(Grid grid, Rectangle rect, int row, int col, Color background) {
       myGrid = grid;
       myRect = rect;
+      myRow = row;
+      myCol = col;
       myBackground = background;
-      myChildren = new LinkedList<DrawUpdatable>();
+      myChildren = new LinkedList<Tickable>();
    }
 
    @Override
@@ -39,23 +42,31 @@ public class Tile implements GameComponent<DrawUpdatable> {
       }
    }
 
+   @Override
+   public void tick() {
+      for ( Tickable toTick : myChildren ) {
+         toTick.tick();
+      }
+   }
+
    public Rectangle getRect() { return myRect; }
    public void setRect(Rectangle rect) { myRect = rect; }
 
 
    @Override
-   public void addComponent(DrawUpdatable toAdd) {
+   public void addComponent(Tickable toAdd) {
       myChildren.add(toAdd);
    }
 
    @Override
-   public void removeComponent(DrawUpdatable toRemove) {
+   public void removeComponent(Tickable toRemove) {
       myChildren.remove(toRemove);
    }
 
    @Override
-   public Collection<DrawUpdatable> getComponents() {
-      // TODO Auto-generated method stub
-      return null;
-   }
+   public Collection<Tickable> getComponents() { return myChildren; }
+   public Grid getGrid() { return myGrid; }
+   public int getRow() { return myRow; }
+   public int getCol() { return myCol; }
+
 }

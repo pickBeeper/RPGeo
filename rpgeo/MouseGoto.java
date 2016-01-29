@@ -1,29 +1,37 @@
+/*
+ *
+ */
 package rpgeo;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Polygon;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
-import gfm.util.Vec2;
+import gfm.util.ColorCross;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class MouseGoto.
  */
 public class MouseGoto {
-   
-   /** The my bounds. */
+
+   /** The bounds for the mouse goto. */
    private Rectangle myBounds;
-   
-   /** The my is activated. */
+
+   /** The player to direct. */
+   private Mob myPlayer;
+
+   /** Whether the mouse goto is activated */
    private boolean myIsActivated;
-   
-   /** The my pos. */
-   private Vec2 myPos;
-   
-   /** The my animation. */
+
+   /** The place of the chosen tile */
+   private Place myPlace;
+
+   /** The chosen tile */
+   private Tile myTile;
+
+   /** The mouse goto's animation. */
    private MouseGotoAnimation myAnimation;
 
    /**
@@ -31,17 +39,17 @@ public class MouseGoto {
     *
     * @param bounds the bounds
     */
-   public MouseGoto(Rectangle bounds) {
+   public MouseGoto(Rectangle bounds, Mob player) {
       myBounds = bounds;
+      myPlayer = player;
       myIsActivated = false;
-      myPos = new Vec2();
-      myAnimation = new MouseGotoAnimation(Color.red);
+      myAnimation = new MouseGotoAnimation();
    }
 
    /**
-    * Draw.
+    * Draw the mouse goto's animation
     *
-    * @param pen the pen
+    * @param pen the Graphics object to draw with
     */
    public void draw(Graphics pen) {
       if ( myIsActivated ) {
@@ -50,11 +58,28 @@ public class MouseGoto {
    }
 
    /**
-    * Update.
+    * Update the mouse goto and animation.
     */
    public void update() {
       if ( myIsActivated ) {
          myAnimation.update();
+
+         Tile pTile = myPlayer.getTile();
+         if ( myTile == pTile ) {
+            myIsActivated = false;
+            return;
+         }
+
+         // calculate tile dist
+         int xDist = myTile.getCol() - pTile.getCol();
+         int yDist = myTile.getRow() - pTile.getRow();
+         // calcuate angle
+         double angle = Math.atan2(yDist, xDist);
+         // get if x/y components -1, 0, or 1
+         int xMove = (int) Math.round(Math.cos(angle));
+         int yMove = (int) Math.round(Math.sin(angle));
+         System.out.println(xMove + ", " + yMove);
+         myPlayer.move(xMove, yMove);
       }
    }
 
@@ -64,12 +89,21 @@ public class MouseGoto {
     * @param event the event
     */
    public void mouseClicked(MouseEvent event) {
-      if ( myBounds.contains(event.getPoint()) ) {
-         activate();
-         myPos.setX(event.getX());
-         myPos.setY(event.getY());
-         myAnimation.reset();
-         myAnimation.setPos(myPos.copy());
+      Point point = event.getPoint();
+
+      Tile[][] tiles = myPlace.getGrid().getTiles();
+      boolean foundTile = false;
+      for ( int r = 0; r < tiles.length; r++ ) {
+         for ( int c = 0; c < tiles[0].length; c++ ) {
+            if ( tiles[ r ][ c ].getRect().contains(point) ) {
+               myTile = tiles[ r ][ c ];
+               myIsActivated = true;
+               myAnimation.reset();
+               myAnimation.setTile(myTile);
+               foundTile = true;
+               return;
+            }
+         }
       }
    }
 
@@ -79,62 +113,60 @@ public class MouseGoto {
     * @param event the event
     */
    public void mouseDragged(MouseEvent event) {
-      if ( myBounds.contains(event.getPoint()) ) {
-         activate();
-         myPos.setX(event.getX());
-         myPos.setY(event.getY());
-         myAnimation.setPos(myPos.copy());
+      Point point = event.getPoint();
+
+      Tile[][] tiles = myPlace.getGrid().getTiles();
+      boolean foundTile = false;
+      for ( int r = 0; r < tiles.length; r++ ) {
+         for ( int c = 0; c < tiles[0].length; c++ ) {
+            if ( tiles[ r ][ c ].getRect().contains(point) ) {
+               myTile = tiles[ r ][ c ];
+               myIsActivated = true;
+               myAnimation.setTile(myTile);
+               foundTile = true;
+               return;
+            }
+         }
       }
    }
 
    /**
-    * Activate.
+    * Activate the mouse goto.
     */
    public void activate() { myIsActivated = true; }
-   
+
    /**
-    * Deactivate.
+    * Deactivate the mouse goto.
     */
    public void deactivate() { myIsActivated = false; }
+
+   /**
+    * Sets the place.
+    *
+    * @param place the new place
+    */
+   public void setPlace(Place place) { myPlace = place; }
 }
 
 class MouseGotoAnimation {
-   private Color myColor;
    private int myFrame;
-   private Vec2 myPos;
-   private Vec2[] myPoints;
+   private Tile myTile;
 
-   public MouseGotoAnimation(Color color) {
-      myColor = color;
+   public MouseGotoAnimation() {
       myFrame = 0;
-      myPos = new Vec2();
+      myTile = null;
    }
 
    public void draw(Graphics pen) {
-      pen.setColor(myColor);
+      Rectangle bounds = myTile.getRect();
 
-      rotateAndScale();
-      int[] xCoords = new int[] {
-            (int) myPoints[0].getX(), (int) myPoints[1].getX(),
-            (int) myPoints[2].getX(), (int) myPoints[3].getX() };
-      int[] yCoords = new int[] {
-            (int) myPoints[0].getY(), (int) myPoints[1].getY(),
-            (int) myPoints[2].getY(), (int) myPoints[3].getY() };
+      int x = (int) bounds.getX();
+      int y = (int) bounds.getY();
+      int width = (int) bounds.getWidth();
+      int height = (int) bounds.getHeight();
 
-      Polygon square = new Polygon(xCoords, yCoords, 4);
-      pen.fillPolygon(square);
-   }
-
-   public void rotateAndScale() {
-      myPoints = new Vec2[] {
-            new Vec2(-1, -1), new Vec2(1, -1),
-            new Vec2(1, 1), new Vec2(-1, 1) };
-
-      for ( Vec2 point : myPoints ) {
-         point.setMagnitude(7);
-         point.rotateDegrees(5 * myFrame);
-         point.addVector(myPos);
-      }
+      pen.setColor(ColorCross.randColor());
+      pen.fillRect(x, y, width, height);
    }
 
    public void update() {
@@ -145,5 +177,5 @@ class MouseGotoAnimation {
       myFrame = 0;
    }
 
-   public void setPos(Vec2 pos) { myPos = pos; }
+   public void setTile(Tile tile) { myTile = tile; }
 }
