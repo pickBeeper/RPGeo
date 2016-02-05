@@ -2,6 +2,7 @@ package rpgeo;
 
 import gfm.Game;
 import gfm.gamestate.GameState;
+import rpgeo.editor.Editor;
 
 public class Main {
    private static int gameWidth = 640;
@@ -14,8 +15,11 @@ public class Main {
       Game game = new Game("RPGeo", gameWidth, gameHeight, drawWidth, drawHeight);
 
       GameState play = new Play(game);
+      GameState editor = new Editor(game);
+
       game.addGameState(play);
       game.setGameState("play");
+      game.addGameState(editor);
       game.start();
    }
 }
