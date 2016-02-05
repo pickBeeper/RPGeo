@@ -68,5 +68,10 @@ public class Tile extends BasicTickable {
    public Grid getGrid() { return myGrid; }
    public int getRow() { return myRow; }
    public int getCol() { return myCol; }
-
+   public Rectangle getRect() { return myRect; }
+   public void setRect(Rectangle rect) { myRect = rect; }
+   public Object getAttribute(String name) { return myAttributes.get(name); }
+   public void setAttribute(String name, Object obj) { myAttributes.put(name, obj); }
+   public Color getBackground() { return (Color) myAttributes.get("background"); }
+   public void setBackground(Color color) { myAttributes.put("background", color); }
 }
