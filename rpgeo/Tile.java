@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import gfm.DrawUpdatable;
+import rpgeo.game.BasicTickable;
 
 public class Tile extends BasicTickable {
    private static final String[] myPermAttributes = new String[] {
@@ -22,18 +23,24 @@ public class Tile extends BasicTickable {
    private HashMap<String, Object> myAttributes;
    private LinkedList<Tickable> myChildren;
 
-   public Tile(Grid grid, Rectangle rect, int row, int col, Color background) {
+   public Tile(Grid grid, Rectangle rect, int row, int col) {
+      this(grid, rect, Color.black, true, row, col);
+   }
+
+   public Tile(Grid grid, Rectangle rect, Color bg, Boolean passable, int row, int col) {
       myGrid = grid;
       myRect = rect;
+      myAttributes = new HashMap<String, Object>();
+      myAttributes.put("background", bg);
+      myAttributes.put("passable", passable);
       myRow = row;
       myCol = col;
-      myBackground = background;
       myChildren = new LinkedList<Tickable>();
    }
 
    @Override
    public void draw(Graphics pen) {
-      pen.setColor(myBackground);
+      pen.setColor((Color) myAttributes.get("background"));
       pen.fillRect(myRect.x, myRect.y, myRect.width, myRect.height);
 
       for ( DrawUpdatable child : myChildren ) {
@@ -55,15 +62,10 @@ public class Tile extends BasicTickable {
       }
    }
 
-   public Rectangle getRect() { return myRect; }
-   public void setRect(Rectangle rect) { myRect = rect; }
-
-
    @Override
    public void addComponent(Tickable toAdd) {
       myChildren.add(toAdd);
    }
-
    @Override
    public void removeComponent(Tickable toRemove) {
       myChildren.remove(toRemove);
