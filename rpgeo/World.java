@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 import gfm.GameComponent;
 import gfm.gui.GUIManager;
+import rpgeo.game.MouseGoto;
+import rpgeo.game.Player;
 
 public class World implements GameComponent<Place> {
    private GUIManager myGUIManager;
