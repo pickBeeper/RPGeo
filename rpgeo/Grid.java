@@ -3,16 +3,15 @@ package rpgeo;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 
 import gfm.util.ColorCross;
+import rpgeo.game.BasicTickable;
 
-public class Grid extends BasicTickable {
-   public enum DIR {
-      LEFT, RIGHT, UP, DOWN, UPLEFT,
-      UPRIGHT, DOWNLEFT, DOWNRIGHT
-   }
+public class Grid extends BasicTickable implements Serializable {
+   private static final long serialVersionUID = 3177855217308926562L;
 
    private Rectangle myBounds;
    private int myColumns;
@@ -47,7 +46,7 @@ public class Grid extends BasicTickable {
 
             Rectangle bounds = new Rectangle(x, y, width, height);
             Color color = ColorCross.randColor();
-            myTiles[ r ][ c ] = new Tile(this, bounds, r, c, color);
+            myTiles[ r ][ c ] = new Tile(this, bounds, color, true, r, c);
          }
       }
    }
@@ -100,6 +99,7 @@ public class Grid extends BasicTickable {
 
    public Tile[][] getTiles() { return myTiles; }
    public Tile getTile(int row, int col) { return myTiles[ row ][ col ]; }
+   public Rectangle getBounds() { return myBounds; }
    @Override
    public Collection<Tickable> getComponents() { return myComponents; }
 }
