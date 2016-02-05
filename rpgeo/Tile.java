@@ -4,16 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import gfm.DrawUpdatable;
 
 public class Tile extends BasicTickable {
+   private static final String[] myPermAttributes = new String[] {
+         "background",
+         "passable"
+   };
+
    private Grid myGrid;
    private Rectangle myRect;
    private int myRow;
    private int myCol;
-   private Color myBackground;
+   private HashMap<String, Object> myAttributes;
    private LinkedList<Tickable> myChildren;
 
    public Tile(Grid grid, Rectangle rect, int row, int col, Color background) {
@@ -61,6 +67,15 @@ public class Tile extends BasicTickable {
    @Override
    public void removeComponent(Tickable toRemove) {
       myChildren.remove(toRemove);
+   }
+
+   public void removeAttribute(String name, Object obj) {
+      for ( String perm : myPermAttributes ) {
+         if ( perm.equals(name) ) {
+            String mssg = "Can't remove attribute " + name + ".";
+            throw new IllegalArgumentException(mssg);
+         }
+      }
    }
 
    @Override
