@@ -1,4 +1,7 @@
-package rpgeo;
+package rpgeo.game;
+
+import rpgeo.Place;
+import rpgeo.World;
 
 public class TestPlace extends Place {
 

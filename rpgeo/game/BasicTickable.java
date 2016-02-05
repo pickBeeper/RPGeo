@@ -1,10 +1,11 @@
-package rpgeo;
+package rpgeo.game;
 
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import gfm.GameComponentAdapter;
+import rpgeo.Tickable;
 
 public abstract class BasicTickable extends GameComponentAdapter<Tickable> implements Tickable {
    private HashMap<String, LinkedList<ActionListener>> myQueuedActions =

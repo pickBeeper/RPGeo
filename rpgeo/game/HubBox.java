@@ -1,4 +1,4 @@
-package rpgeo;
+package rpgeo.game;
 
 import java.awt.Color;
 import java.awt.Rectangle;

@@ -1,7 +1,10 @@
-package rpgeo;
+package rpgeo.game;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import rpgeo.Tickable;
+import rpgeo.Tile;
 
 
 /**

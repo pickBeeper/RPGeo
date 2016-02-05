@@ -1,7 +1,7 @@
 /*
  *
  */
-package rpgeo;
+package rpgeo.game;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -9,6 +9,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import gfm.util.ColorCross;
+import rpgeo.Place;
+import rpgeo.Tile;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,7 +80,6 @@ public class MouseGoto {
          // get if x/y components -1, 0, or 1
          int xMove = (int) Math.round(Math.cos(angle));
          int yMove = (int) Math.round(Math.sin(angle));
-         System.out.println(xMove + ", " + yMove);
          myPlayer.move(xMove, yMove);
       }
    }

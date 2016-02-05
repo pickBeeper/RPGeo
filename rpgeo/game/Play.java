@@ -1,4 +1,4 @@
-package rpgeo;
+package rpgeo.game;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -8,6 +8,7 @@ import java.awt.event.MouseWheelEvent;
 
 import gfm.Game;
 import gfm.gamestate.GameState;
+import rpgeo.World;
 
 public class Play extends GameState {
    private World myWorld;

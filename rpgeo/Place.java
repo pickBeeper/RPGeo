@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import rpgeo.game.BasicTickable;
+
 public class Place extends BasicTickable {
    private World myWorld;
    private int myWidth;
