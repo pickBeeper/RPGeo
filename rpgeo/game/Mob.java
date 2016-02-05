@@ -1,9 +1,13 @@
-package rpgeo;
+package rpgeo.game;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.LinkedList;
+
+import rpgeo.Grid;
+import rpgeo.Tickable;
+import rpgeo.Tile;
 
 public abstract class Mob extends BasicTickable {
    private LinkedList<Tickable> myComponents = new LinkedList<Tickable>();
@@ -66,8 +70,11 @@ class MoveAction implements ActionListener {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-      myMob.setTile(myTo);
-      myFrom.getComponents().remove(myMob);
-      myTo.addComponent(myMob);
+      boolean passable = (Boolean)myTo.getAttribute("passable");
+      if ( passable ) {
+         myMob.setTile(myTo);
+         myFrom.getComponents().remove(myMob);
+         myTo.addComponent(myMob);
+      }
    }
 }
