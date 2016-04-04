@@ -190,7 +190,7 @@ class SaveListener implements ActionListener {
       AttributeDisplay[][] displays = new AttributeDisplay[ rows ][ cols ];
       for ( int r = 0; r < grid.getTiles().length; r++ ) {
          for ( int c = 0; c < grid.getTiles()[0].length; c++ ) {
-            grid.getTiles()[ r ][ c ].setAttribute("editing", Boolean.FALSE);
+            grid.getTiles()[ r ][ c ].setIsEditing(false);
             for ( Tickable t : grid.getTiles()[ r ][ c ].getComponents() ) {
                if ( t instanceof AttributeDisplay ) {
                   displays[ r ][ c ] = (AttributeDisplay) t;
@@ -201,18 +201,27 @@ class SaveListener implements ActionListener {
          }
       }
 
+      ObjectOutputStream out = null;
       try {
          FileOutputStream fileOut = new FileOutputStream(new File(name));
-         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+         out = new ObjectOutputStream(fileOut);
          out.writeObject(grid);
       } catch (IOException e1) {
          e1.printStackTrace();
+      } finally {
+         try {
+            if ( out != null ) {
+               out.close();
+            }
+         } catch (Exception e2) {
+            e2.printStackTrace();
+         }
       }
 
       for ( int r = 0; r < displays.length; r++ ) {
          for ( int c = 0; c < displays[0].length; c++ ) {
             grid.getTiles()[ r ][ c ].addComponent(displays[ r ][ c ]);
-            grid.getTiles()[ r ][ c ].setAttribute("editing", Boolean.TRUE);
+            grid.getTiles()[ r ][ c ].setIsEditing(true);
          }
       }
    }

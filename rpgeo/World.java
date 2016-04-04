@@ -14,13 +14,13 @@ import gfm.gui.GUIManager;
 import rpgeo.game.MouseGoto;
 import rpgeo.game.Player;
 
-public class World implements GameComponent<Place> {
+public class World implements GameComponent<Grid> {
    private GUIManager myGUIManager;
    private Rectangle myBounds;
    private Player myPlayer;
    private MouseGoto myMouseGoto;
-   private HashMap<String, Place> myPlaces;
-   private Place myCurrentPlace;
+   private HashMap<String, Grid> myGrids;
+   private Grid myCurrentGrid;
    private int myTime;
 
    public World(GUIManager guiManager, Rectangle bounds) {
@@ -28,24 +28,24 @@ public class World implements GameComponent<Place> {
       myBounds = bounds;
       myPlayer = new Player("", null, Color.red);
       myMouseGoto = new MouseGoto(myBounds, myPlayer);
-      myPlaces = new HashMap<String, Place>();
+      myGrids = new HashMap<String, Grid>();
       myTime = 0;
    }
 
    @Override
    public void draw(Graphics pen) {
-      if ( myCurrentPlace != null ) {
-         myCurrentPlace.draw(pen);
+      if ( myCurrentGrid != null ) {
+         myCurrentGrid.draw(pen);
       }
 
       myMouseGoto.draw(pen);
    }
    @Override
    public void update() {
-      if ( myCurrentPlace != null ) {
-         myCurrentPlace.update();
+      if ( myCurrentGrid != null ) {
+         myCurrentGrid.update();
          if ( myTime % 5 == 0 ) {
-            myCurrentPlace.tick();
+            myCurrentGrid.tick();
          }
       }
 
@@ -66,41 +66,43 @@ public class World implements GameComponent<Place> {
    }
    public void mouseEntered(MouseEvent event) {}
    public void mouseExited(MouseEvent event) {}
-   public void mouseMoved(MouseEvent event) {}
+   public void mouseMoved(MouseEvent event) {
+      myMouseGoto.mouseMoved(event);
+   }
    public void mousePressed(MouseEvent event) {}
    public void mouseReleased(MouseEvent event) {}
    public void mouseWheelMoved(MouseWheelEvent event) {}
 
    @Override
-   public void addComponent(Place toAdd) {
+   public void addComponent(Grid toSet) {
       // error if area name taken
-      if ( myPlaces.keySet().contains(toAdd.getName()) ) {
-         String mssg = "Area " + toAdd.getName() + " already exists.";
+      if ( myGrids.keySet().contains(toSet.getName()) ) {
+         String mssg = "Area " + toSet.getName() + " already exists.";
          throw new IllegalArgumentException(mssg);
       }
 
-      myPlaces.put(toAdd.getName(), toAdd);
+      myGrids.put(toSet.getName(), toSet);
    }
 
    @Override
-   public void removeComponent(Place toRemove) {
-      myPlaces.remove(toRemove.getName());
+   public void removeComponent(Grid toRemove) {
+      myGrids.remove(toRemove.getName());
    }
 
    public GUIManager getGUIManager() { return myGUIManager; }
    public Player getPlayer() { return myPlayer; }
    public MouseGoto getMouseGoto() { return myMouseGoto; }
    @Override
-   public Collection<Place> getComponents() { return myPlaces.values(); }
+   public Collection<Grid> getComponents() { return myGrids.values(); }
    public Rectangle getBounds() { return myBounds; }
    public void setBounds(Rectangle bounds) { myBounds = bounds; }
-   public Place getPlace(String name) { return myPlaces.get(name); }
+   public Grid getGrid(String name) { return myGrids.get(name); }
 
-   public void setPlace(Place toSet) {
-      if ( !myPlaces.containsValue(toSet) ) {
+   public void setGrid(Grid toSet) {
+      if ( !myGrids.containsValue(toSet) ) {
          addComponent(toSet);
       }
-      myCurrentPlace = toSet;
-      myMouseGoto.setPlace(myCurrentPlace);
+      myCurrentGrid = toSet;
+      myMouseGoto.setGrid(myCurrentGrid);
    }
 }

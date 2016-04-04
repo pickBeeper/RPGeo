@@ -42,7 +42,7 @@ public class Editor extends GameState {
       bounds.setLocation(4, 4);
       bounds.setSize(getWidth()  - 8, getHeight() * 4 / 5);
 
-      myGrid = new Grid(bounds, 30, 25);
+      myGrid = new Grid("nameless", bounds, 30, 25);
 
       Tile[][] tiles = myGrid.getTiles();
       for ( int r = 0; r < tiles.length; r++ ) {

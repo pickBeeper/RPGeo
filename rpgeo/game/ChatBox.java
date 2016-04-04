@@ -71,4 +71,7 @@ class ChatMessage {
       mySender = player.getName();
       myMessage = message;
    }
+
+   public String getSender() { return mySender; }
+   public String getMessage() { return myMessage; }
 }

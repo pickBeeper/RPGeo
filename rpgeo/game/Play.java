@@ -5,9 +5,16 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+import javax.swing.JOptionPane;
 
 import gfm.Game;
 import gfm.gamestate.GameState;
+import rpgeo.Grid;
 import rpgeo.World;
 
 public class Play extends GameState {
@@ -47,7 +54,35 @@ public class Play extends GameState {
       bounds.setSize(getWidth()  - 8, getHeight() * 4 / 5);
 
       myWorld = new World(getGUIManager(), bounds);
-      myWorld.setPlace(new TestPlace(myWorld, 30, 25, "test"));
+
+      FileInputStream fileIn = null;
+      ObjectInputStream in = null;
+      Grid grid = null;
+      try {
+         String filename = JOptionPane.showInputDialog("To Open: ");
+         if ( filename == null || filename == "" ) {
+            return;
+         }
+         fileIn = new FileInputStream(new File(filename));
+         in = new ObjectInputStream(fileIn);
+         grid = (Grid) in.readObject();
+      } catch (IOException e) {
+         e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+         e.printStackTrace();
+      } finally {
+         try {
+            if ( in != null ) {
+               in.close();
+            }
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+
+      myWorld.getPlayer().setTile(grid.getTile(0, 0));
+      grid.getTile(0, 0).addComponent(myWorld.getPlayer());
+      myWorld.setGrid(grid);
 
       myGameGUI = new GameGUI(this);
    }

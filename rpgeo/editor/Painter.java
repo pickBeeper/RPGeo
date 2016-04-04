@@ -15,7 +15,6 @@ public class Painter {
    private EditorGUI myEditorGUI;
    private String myEditMode;
    private HashMap<String, Object> myAttributes;
-   private boolean myIsFilling;
 
    public Painter(Grid grid) {
       myGrid = grid;

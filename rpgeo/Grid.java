@@ -13,13 +13,15 @@ import rpgeo.game.BasicTickable;
 public class Grid extends BasicTickable implements Serializable {
    private static final long serialVersionUID = 3177855217308926562L;
 
+   private String myName;
    private Rectangle myBounds;
    private int myColumns;
    private int myRows;
    private Tile[][] myTiles;
    private LinkedList<Tickable> myComponents;
 
-   public Grid(Rectangle bounds, int cols, int rows) {
+   public Grid(String name, Rectangle bounds, int cols, int rows) {
+      myName = name;
       myBounds = bounds;
       myColumns = cols;
       myRows = rows;
@@ -99,6 +101,8 @@ public class Grid extends BasicTickable implements Serializable {
 
    public Tile[][] getTiles() { return myTiles; }
    public Tile getTile(int row, int col) { return myTiles[ row ][ col ]; }
+   public String getName() { return myName; }
+   public void setName(String name) { myName = name; }
    public Rectangle getBounds() { return myBounds; }
    @Override
    public Collection<Tickable> getComponents() { return myComponents; }

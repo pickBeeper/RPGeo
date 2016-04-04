@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 import gfm.Macro;
+import gfm.gui.GUIBox;
 import gfm.gui.GUIManager;
 
 public class GameGUI implements Macro {
@@ -15,7 +16,7 @@ public class GameGUI implements Macro {
    private GUIManager myGUIManager;
    private Player myPlayer;
    private ChatBox myChatBox;
-   private HubBox myHubBox;
+   private GameHubBox myHubBox;
 
    public GameGUI(Play play) {
       myPlay = play;
@@ -41,7 +42,7 @@ public class GameGUI implements Macro {
       hubBounds.setLocation(4, 8 + height * 4 / 5);
       hubBounds.setSize(width - 8, height / 5 - 12);
       int alpha = color.getAlpha();
-      myHubBox = new HubBox(hubBounds, color, alpha / 2, alpha, 4);
+      myHubBox = new GameHubBox(this, hubBounds, color, alpha / 2, alpha, 4);
 
       // add components
       myGUIManager.addGUIComponent(myChatBox);
@@ -61,54 +62,57 @@ public class GameGUI implements Macro {
    }
 
    @Override
-   public void keyPressed(KeyEvent event) {
-      myChatBox.keyPressed(event);
-   }
-
+   public void keyPressed(KeyEvent event) { }
    @Override
-   public void keyReleased(KeyEvent event) {
-      myChatBox.keyReleased(event);
-   }
-
+   public void keyReleased(KeyEvent event) { }
    @Override
-   public void keyTyped(KeyEvent event) {
-      myChatBox.keyTyped(event);
-   }
-
+   public void keyTyped(KeyEvent event) { }
    @Override
-   public void mouseClicked(MouseEvent event) {
-      // TODO Auto-generated method stub
-
-   }
-
+   public void mouseClicked(MouseEvent event) { }
    @Override
-   public void mouseDragged(MouseEvent event) {
-      // TODO Auto-generated method stub
-
-   }
-
+   public void mouseDragged(MouseEvent event) { }
    @Override
-   public void mouseEntered(MouseEvent event) {
-      // TODO Auto-generated method stub
-
-   }
-
+   public void mouseEntered(MouseEvent event) { }
    @Override
    public void mouseExited(MouseEvent event) {
       myHubBox.deactivate();
    }
-
    @Override
    public void mouseMoved(MouseEvent event) {
       myHubBox.setActivated(myHubBox.contains(event));
    }
-
    @Override
    public void mousePressed(MouseEvent event) { }
-
    @Override
    public void mouseReleased(MouseEvent event) { }
-
    @Override
    public void mouseWheelMoved(MouseWheelEvent event) { }
+
+   public Play getPlay() { return myPlay; }
+   public ChatBox getChatBox() { return myChatBox; }
+}
+
+class GameHubBox extends GUIBox {
+   private GameGUI myGameGUI;
+
+   public GameHubBox(GameGUI gui, Rectangle box, Color color, int minOpacity, int maxOpacity, int opacitySpeed) {
+      super(box, color, minOpacity, maxOpacity, opacitySpeed);
+      myGameGUI = gui;
+   }
+
+   @Override
+   public void keyPressed(KeyEvent event) {
+      if ( !myGameGUI.getChatBox().isActivated() &&
+            KeyEvent.getKeyText(event.getKeyCode()).length() == 1) {
+         doCommand(event.getKeyChar());
+      }
+   }
+
+   public synchronized void doCommand(char c) {
+      if ( c == 'f' ) {
+         myGameGUI.getPlay().getWorld().getMouseGoto().toggleFollow();
+      }
+   }
+
+   public GameGUI getGameGUI() { return myGameGUI; }
 }

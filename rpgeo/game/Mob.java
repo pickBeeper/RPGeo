@@ -70,8 +70,7 @@ class MoveAction implements ActionListener {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-      boolean passable = (Boolean)myTo.getAttribute("passable");
-      if ( passable ) {
+      if ( myTo.isPassable() ) {
          myMob.setTile(myTo);
          myFrom.getComponents().remove(myMob);
          myTo.addComponent(myMob);

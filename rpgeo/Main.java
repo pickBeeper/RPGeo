@@ -19,19 +19,20 @@ public class Main {
    public static void main(String[] args) {
       Game game = new Game("RPGeo", gameWidth, gameHeight, drawWidth, drawHeight);
 
-      GameState play = new Play(game);
-      GameState editor = new Editor(game);
-
-      game.addGameState(play);
-      game.addGameState(editor);
-
       String state = JOptionPane.showInputDialog("GameState: ");
-      if ( state == null ) {
-         System.exit(0);
+      if ( state.equals("play") ) {
+         GameState play = new Play(game);
+         game.addGameState(play);
+         game.setGameState("play");
+      } else if ( state.equals("edit") || state.equals("editor") ) {
+         GameState editor = new Editor(game);
+         game.addGameState(editor);
+         game.setGameState("editor");
       } else {
-         game.setGameState(state);
+         System.exit(0);
       }
 
       game.start();
+      //System.out.println("Const. follow");
    }
 }

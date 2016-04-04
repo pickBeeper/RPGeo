@@ -1,18 +1,14 @@
-/*
- *
- */
 package rpgeo.game;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
-import gfm.util.ColorCross;
-import rpgeo.Place;
+import rpgeo.Grid;
 import rpgeo.Tile;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MouseGoto.
  */
@@ -28,13 +24,12 @@ public class MouseGoto {
    private boolean myIsActivated;
 
    /** The place of the chosen tile */
-   private Place myPlace;
+   private Grid myGrid;
 
    /** The chosen tile */
    private Tile myTile;
 
-   /** The mouse goto's animation. */
-   private MouseGotoAnimation myAnimation;
+   private int myFollow;
 
    /**
     * Instantiates a new mouse goto.
@@ -45,7 +40,7 @@ public class MouseGoto {
       myBounds = bounds;
       myPlayer = player;
       myIsActivated = false;
-      myAnimation = new MouseGotoAnimation();
+      myFollow = 0;
    }
 
    /**
@@ -55,7 +50,13 @@ public class MouseGoto {
     */
    public void draw(Graphics pen) {
       if ( myIsActivated ) {
-         myAnimation.draw(pen);
+         Rectangle bounds = myTile.getRect();
+         int x = (int) bounds.getX();
+         int y = (int) bounds.getY();
+         int width = (int) bounds.getWidth();
+         int height = (int) bounds.getHeight();
+         pen.setColor(Color.black);
+         pen.drawRect(x, y, width, height);
       }
    }
 
@@ -64,8 +65,6 @@ public class MouseGoto {
     */
    public void update() {
       if ( myIsActivated ) {
-         myAnimation.update();
-
          Tile pTile = myPlayer.getTile();
          if ( myTile == pTile ) {
             myIsActivated = false;
@@ -92,16 +91,16 @@ public class MouseGoto {
    public void mouseClicked(MouseEvent event) {
       Point point = event.getPoint();
 
-      Tile[][] tiles = myPlace.getGrid().getTiles();
-      boolean foundTile = false;
+      if ( !myBounds.contains(point) ) {
+         return;
+      }
+
+      Tile[][] tiles = myGrid.getTiles();
       for ( int r = 0; r < tiles.length; r++ ) {
          for ( int c = 0; c < tiles[0].length; c++ ) {
             if ( tiles[ r ][ c ].getRect().contains(point) ) {
                myTile = tiles[ r ][ c ];
                myIsActivated = true;
-               myAnimation.reset();
-               myAnimation.setTile(myTile);
-               foundTile = true;
                return;
             }
          }
@@ -116,20 +115,40 @@ public class MouseGoto {
    public void mouseDragged(MouseEvent event) {
       Point point = event.getPoint();
 
-      Tile[][] tiles = myPlace.getGrid().getTiles();
-      boolean foundTile = false;
+      Tile[][] tiles = myGrid.getTiles();
       for ( int r = 0; r < tiles.length; r++ ) {
          for ( int c = 0; c < tiles[0].length; c++ ) {
             if ( tiles[ r ][ c ].getRect().contains(point) ) {
                myTile = tiles[ r ][ c ];
                myIsActivated = true;
-               myAnimation.setTile(myTile);
-               foundTile = true;
                return;
             }
          }
       }
    }
+
+   public void mouseMoved(MouseEvent event) {
+      // System.out.println(myFollow);
+      if ( myFollow % 4 >= 2 ) {
+         Point point = event.getPoint();
+
+         Tile[][] tiles = myGrid.getTiles();
+         for ( int r = 0; r < tiles.length; r++ ) {
+            for ( int c = 0; c < tiles[0].length; c++ ) {
+               if ( tiles[ r ][ c ].getRect().contains(point) ) {
+                  myTile = tiles[ r ][ c ];
+                  myIsActivated = true;
+                  return;
+               }
+            }
+         }
+      }
+   }
+
+   public void toggleFollow() {
+      myFollow += 1;
+   }
+
 
    /**
     * Activate the mouse goto.
@@ -146,37 +165,5 @@ public class MouseGoto {
     *
     * @param place the new place
     */
-   public void setPlace(Place place) { myPlace = place; }
-}
-
-class MouseGotoAnimation {
-   private int myFrame;
-   private Tile myTile;
-
-   public MouseGotoAnimation() {
-      myFrame = 0;
-      myTile = null;
-   }
-
-   public void draw(Graphics pen) {
-      Rectangle bounds = myTile.getRect();
-
-      int x = (int) bounds.getX();
-      int y = (int) bounds.getY();
-      int width = (int) bounds.getWidth();
-      int height = (int) bounds.getHeight();
-
-      pen.setColor(ColorCross.randColor());
-      pen.fillRect(x, y, width, height);
-   }
-
-   public void update() {
-      myFrame++;
-   }
-
-   public void reset() {
-      myFrame = 0;
-   }
-
-   public void setTile(Tile tile) { myTile = tile; }
+   public void setGrid(Grid place) { myGrid = place; }
 }
